@@ -79,8 +79,15 @@ module.exports = (env) => {
           { from: "static", to: "static" },
         ],
       }),
+      new HtmlWebpackPlugin({
+        chunks: ["index"],
+        template: "templates/index.hbs",
+        filename: "index.html",
+        templateParameters: {
+          powerup_name: process.env.POWERUP_NAME
+        }
+      }),
       new MiniCssExtractPlugin(),
-      // Webpack HTML Routes Here
     ],
     optimization: !env.WEBPACK_BUILD ? {} : {
       minimize: true,

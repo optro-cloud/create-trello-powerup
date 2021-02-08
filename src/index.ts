@@ -1,10 +1,24 @@
 import {Command, flags} from '@oclif/command'
-import cli from 'cli-ux'
 import * as inquirer from 'inquirer'
-import {ALL_CAPABILITIES, copyFile, deleteFile, deleteFolder, downloadRepo} from './utilities'
+import {getCapabilityModule, getEnv, getIndent, getReactRouterLoader, getWebpackHtmlPlugin} from './utility/string'
 import * as path from 'path'
 import * as fs from 'fs'
-import {exec} from 'child_process'
+import {execSync} from 'child_process'
+import * as shell from 'shelljs'
+import * as replace from 'replace-in-file'
+import {
+  ALL_CAPABILITIES,
+  ALL_HTML_BACKED_CAPABILITIES, CAPABILITIES_REPLACEMENT_STRING, REACT_ROUTER_LOADER_REPLACEMENT_STRING,
+  REACT_ROUTER_MODULE_REPLACEMENT_STRING,
+  WEBPACK_REPLACEMENT_STRING,
+} from './utility/constants'
+import {
+  copyFile,
+  deleteFile,
+  deleteFolder,
+  downloadRepo,
+  writeToFile,
+} from './utility/fs'
 
 class CreateTrelloPowerup extends Command {
   static description = 'Easily create Trello Power-Ups from the Command Line'
@@ -25,6 +39,11 @@ class CreateTrelloPowerup extends Command {
     this.log('Create-Trello-PowerUp')
     this.log('Easily create new Trello Power-Ups with sample code and capabilities...')
     this.log('---')
+
+    if (!shell.which('git')) {
+      shell.echo('Missing Required Package: git')
+      shell.exit(1)
+    }
 
     // Get Information from User
     const parameters = await inquirer.prompt([
@@ -77,100 +96,128 @@ class CreateTrelloPowerup extends Command {
           {name: 'Google Analytics', value: 'ga'},
         ],
       },
+      {
+        name: 'confirm',
+        message: 'Confirm package creation? y/n',
+        type: 'confirm',
+        default: true,
+      },
     ])
 
-    this.log('---')
-    this.log('Selection Complete: Starting Generation...')
-    this.log('---')
+    if (!parameters.confirm) {
+      this.error('User Cancelled Project Generation')
+      this.exit(0)
+    }
 
     // Create Directory
-    this.log('Creating Project Folder...')
-    if (fs.existsSync(name)) {
+    if (fs.existsSync(parameters.name)) {
       this.error('The project folder specified already exists!  Exiting.')
       this.exit(1)
     } else {
-      fs.mkdirSync(path.join(process.cwd(), name))
+      fs.mkdirSync(path.join(process.cwd(), parameters.name))
     }
-    this.log('Done')
 
     // 1. Clone the Template Repo
-    this.log('[1/5] Cloning Template...')
+    this.log('[1/4] Cloning Template...')
     try {
-      await downloadRepo('https://github.com/optro-cloud/trello-powerup-full-sample.git', path.join(process.cwd(), name))
-      deleteFolder(path.join(process.cwd(), name, '.github', 'ISSUE_TEMPLATE'))
+      await downloadRepo('https://github.com/optro-cloud/trello-powerup-full-sample.git', path.join(process.cwd(), parameters.name))
+      deleteFolder(path.join(process.cwd(), parameters.name, '.git'))
     } catch (error) {
       this.error('A fatal error occurred during cloning template', error)
       this.exit(1)
     }
-    this.log('Done')
 
     // 2. Delete Unused Folders
-    this.log('[2/5] Deleting Unused Folders...')
+    this.log('[2/4] Deleting Unused Resources...')
     try {
       const capabilitiesToRemove = ALL_CAPABILITIES.filter(capability => !parameters.capabilities.includes(capability))
       for (const capability of capabilitiesToRemove) {
-        deleteFolder(path.join(process.cwd(), name, 'src', capability))
+        deleteFolder(path.join(process.cwd(), parameters.name, 'src', capability))
       }
+      deleteFolder(path.join(process.cwd(), parameters.name, '.github', 'ISSUE_TEMPLATE'))
+      deleteFile(path.join(process.cwd(), 'webpack.config.js'))
+      deleteFile(path.join(process.cwd(), 'src', 'router.tsx'))
+      deleteFile(path.join(process.cwd(), 'src', 'capabilities.ts'))
     } catch (error) {
-      this.error('A fatal error occurred during deleting unused folders', error)
+      this.error('A fatal error occurred during deleting unused resources', error)
       this.exit(2)
     }
-    this.log('Done')
 
-    // 4. Configure Dynamic Files
-    this.log('[3/5] Configuring Dynamic Files...')
+    // 3. Configure Dynamic Files
+    this.log('[3/4] Configuring Dynamic Files...')
     try {
-      // 4.1 TODO: Webpack Config File
-      deleteFile(path.join(process.cwd(), 'webpack.config.js'))
-      copyFile(path.join(__dirname, '..', 'templates', 'webpack.config.js'), path.join(process.cwd(), name, 'webpack.config.js'))
-      // TODO: REWRITE FILES WITH THE RIGHT LINES DEPENDING ON OPTIONS
-      // Do we need the templates folder from which to create a new file, or just remove the irrelevant patterns?
-      // Best Idea: Use shell.sed to perform stream editing?
-      // Worst Idea: Delete certain lines (these would all be wrong after a previous change was made
-      // 4.2 TODO: React Router File
-      deleteFile(path.join(process.cwd(), 'src', 'router.tsx'))
-      // 4.3 TODO: Capabilities File
-      deleteFile(path.join(process.cwd(), 'src', 'capabilities.ts'))
-      // 4.4 TODO: Environmental Variables File (for dev)
-      // (path.join(process.cwd(), '.env')
-      // 4.5 TODO: Readme File with custom parameters etc.
+      copyFile(path.join(__dirname, '..', 'templates', 'webpack.config.js'), path.join(process.cwd(), parameters.name, 'webpack.config.js'))
+      copyFile(path.join(__dirname, '..', 'templates', 'router.tsx'), path.join(process.cwd(), parameters.name, 'src', 'router.tsx'))
+      copyFile(path.join(__dirname, '..', 'templates', 'capabilities.ts'), path.join(process.cwd(), parameters.name, 'src', 'capabilities.tsx'))
+      const applicableCapabilities = ALL_HTML_BACKED_CAPABILITIES.filter(c => parameters.capabilities.includes(c))
+      for (const capability of applicableCapabilities.reverse()) {
+        // 3.1 - Webpack Config File
+        replace.replaceInFileSync({
+          files: path.join(process.cwd(), parameters.name, 'webpack.config.js'),
+          from: WEBPACK_REPLACEMENT_STRING,
+          to: getWebpackHtmlPlugin(capability),
+        })
+        // 3.2 React Router File
+        replace.replaceInFileSync({
+          files: path.join(process.cwd(), parameters.name, 'src', 'router.tsx'),
+          from: REACT_ROUTER_MODULE_REPLACEMENT_STRING,
+          to: getWebpackHtmlPlugin(capability),
+        })
+        replace.replaceInFileSync({
+          files: path.join(process.cwd(), parameters.name, 'src', 'router.tsx'),
+          from: REACT_ROUTER_LOADER_REPLACEMENT_STRING,
+          to: getReactRouterLoader(capability),
+        })
+        // 3.3 Capabilities File
+        replace.replaceInFileSync({
+          files: path.join(process.cwd(), parameters.name, 'src', 'capabilities.tsx'),
+          from: CAPABILITIES_REPLACEMENT_STRING,
+          to: getCapabilityModule(capability),
+        })
+      }
+      // 3.4 Environmental Variables File
+      writeToFile(
+        path.join(process.cwd(), parameters.name, '.env'),
+        getEnv('UNDEFINED', parameters.name, 'UNDEFINED', 'DISABLED')
+      )
+      // 3.5 Cleanup Unused Dependencies
+      if (!parameters.capabilities.includes('card-back-section')) {
+        replace.replaceInFileSync({
+          files: path.join(process.cwd(), parameters.name, 'package.json'),
+          // TODO: Replace with RegEx
+          from: `${getIndent(1)}"lottie-react": "^2.1.0",\r\n`,
+          to: '',
+        })
+      }
+      if (!parameters.capabilities.includes('attachment-thumbnail')) {
+        replace.replaceInFileSync({
+          files: path.join(process.cwd(), parameters.name, 'package.json'),
+          // TODO: Replace with RegEx
+          from: `${getIndent(1)}"unique-names-generator": "^4.3.1",\r\n`,
+          to: '',
+        })
+      }
+      if (!parameters.capabilities.includes('attachment-thumbnail')) {
+        replace.replaceInFileSync({
+          files: path.join(process.cwd(), parameters.name, 'package.json'),
+          // TODO: Replace with RegEx
+          from: `${getIndent(1)}"react-color": "^2.19.3",\r\n`,
+          to: '',
+        })
+      }
     } catch (error) {
       this.error('A fatal error occurred during configuring dynamic files', error)
       this.exit(3)
     }
-    this.log('Done')
 
     // 4. Install Dependencies
-    this.log('[4/5] Installing Dependencies')
+    this.log('[4/4] Installing Dependencies...')
     try {
-      // TODO: This doesn't block at the moment
-      exec('yarn install', (error, stdOut, stdErr) => {
-        if (error) {
-          this.error(`error: ${error.message}`)
-          return
-        }
-        if (stdErr) {
-          this.log(`stderr: ${stdErr}`)
-          return
-        }
-        this.log(`stdout: ${stdOut}`)
-      })
+      execSync(`yarn --cwd ${path.join(process.cwd(), parameters.name)} install --silent`, {stdio: 'inherit'})
     } catch (error) {
       this.error('A fatal error occurred during installing dependencies', error)
       this.exit(4)
     }
-    this.log('Done')
-
-    // 5. Cleanup
-    this.log('[5/5] Performing Cleanup')
-    try {
-      // TODO: Cleanup, like delete the .git folder
-    } catch (error) {
-      this.error('A fatal error occurred during cleanup', error)
-      this.exit(5)
-    }
-
-    this.log('Done')
   }
 }
 

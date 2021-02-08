@@ -12,5 +12,4 @@ const CAPABILITY_PROPS: CapabilityProps = {
 }
 
 window.TrelloPowerUp.initialize({
-  // Capabilities Here
 });
