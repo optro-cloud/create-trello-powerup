@@ -53,15 +53,15 @@ class CreateTrelloPowerup extends Command {
         type: 'input',
         default: 'my-powerup',
       },
-      {
-        name: 'language',
-        message: '[2/4] Language:',
-        type: 'list',
-        choices: [
-          {name: 'TypeScript', value: 'typescript'},
-          {name: 'JavaScript', value: 'javascript'},
-        ],
-      },
+      // {
+      //   name: 'language',
+      //   message: '[2/4] Language:',
+      //   type: 'list',
+      //   choices: [
+      //     {name: 'TypeScript', value: 'typescript'},
+      //     {name: 'JavaScript', value: 'javascript'},
+      //   ],
+      // },
       {
         name: 'capabilities',
         message: '[3/4] Capabilities:',
