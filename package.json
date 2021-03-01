@@ -1,7 +1,7 @@
 {
   "name": "create-trello-powerup",
   "description": "Easily create Trello Power-Ups from the Command Line",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "author": "Optro",
   "bin": {
     "create-trello-powerup": "./bin/run"
