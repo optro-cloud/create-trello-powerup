@@ -19,6 +19,7 @@ import {
   downloadRepo,
   writeToFile,
 } from './utility/fs'
+import * as fs from "fs";
 
 class CreateTrelloPowerup extends Command {
   static description = 'Easily create Trello Power-Ups from the Command Line'
@@ -112,20 +113,30 @@ class CreateTrelloPowerup extends Command {
     }
 
     const folderName = filenamify(parameters.name).replace(' ', '-')
-    console.log(folderName)
+
+    // Check if Directory Exists
+    if (fs.existsSync(folderName)) {
+      this.error('The project folder specified already exists!  Exiting.')
+      this.exit(1)
+    }
 
     // Create Directory
-    // if (fs.existsSync(folderName)) {
-    //   this.error('The project folder specified already exists!  Exiting.')
-    //   this.exit(1)
-    // } else {
-    //   fs.mkdirSync(path.join(process.cwd(), folderName))
-    // }
+    if (fs.existsSync(folderName)) {
+      this.error('The project folder specified already exists!  Exiting.')
+      this.exit(1)
+    } else {
+      fs.mkdirSync(path.join(process.cwd(), folderName))
+    }
+>>>>>>> 91c9f0f65210f9382dc3ad8a813530353aef0a31
 
     // 1. Clone the Template Repo
     this.log('[1/4] Cloning Template...')
     try {
+<<<<<<< HEAD
       await downloadRepo(TEMPLATE_REPO, path.join(process.cwd(), folderName))
+=======
+      await downloadRepo('https://github.com/optro-cloud/trello-powerup-full-sample.git', path.join(process.cwd(), folderName))
+>>>>>>> 91c9f0f65210f9382dc3ad8a813530353aef0a31
       deleteFolder(path.join(process.cwd(), folderName, '.git'))
     } catch (error) {
       this.error('A fatal error occurred during cloning template', error)

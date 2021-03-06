@@ -24,7 +24,6 @@ Create-Trello-PowerUp
 ---
 
 ? [1/4] Name My Power-Up Name
-? [2/4] Language: TypeScript
 ? [3/4] Capabilities: Board Button, Card Back Section
 ? [4/4] Integrations: Optro Monetization
 ? Confirm package creation? y/n Yes
