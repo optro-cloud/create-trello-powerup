@@ -1,3 +1,5 @@
+export const TEMPLATE_REPO = 'https://github.com/optro-cloud/trello-powerup-full-sample.git'
+
 export const WEBPACK_REPLACEMENT_STRING = 'new MiniCssExtractPlugin(),'
 
 export const REACT_ROUTER_MODULE_REPLACEMENT_STRING = '<Router basename={process.env.CONTEXT_PATH || undefined}>'

@@ -1,4 +1,4 @@
-import * as camelCase from 'camelcase'
+import camelCase from 'camelcase'
 import {
   CAPABILITIES_REPLACEMENT_STRING,
   CAPABILITY_MODULES,

@@ -2,14 +2,14 @@ import {Command, flags} from '@oclif/command'
 import * as inquirer from 'inquirer'
 import {getCapabilityModule, getEnv, getIndent, getReactRouterLoader, getWebpackHtmlPlugin} from './utility/string'
 import * as path from 'path'
-import * as fs from 'fs'
 import {execSync} from 'child_process'
 import * as shell from 'shelljs'
 import * as replace from 'replace-in-file'
+import filenamify from 'filenamify'
 import {
   ALL_CAPABILITIES,
   ALL_HTML_BACKED_CAPABILITIES, CAPABILITIES_REPLACEMENT_STRING, REACT_ROUTER_LOADER_REPLACEMENT_STRING,
-  REACT_ROUTER_MODULE_REPLACEMENT_STRING,
+  REACT_ROUTER_MODULE_REPLACEMENT_STRING, TEMPLATE_REPO,
   WEBPACK_REPLACEMENT_STRING,
 } from './utility/constants'
 import {
@@ -40,6 +40,8 @@ class CreateTrelloPowerup extends Command {
     this.log('Easily create new Trello Power-Ups with sample code and capabilities...')
     this.log('---')
 
+    this.log('PLEASE NOTE: THIS TOOL IS CURRENTLY IN BETA AND HAS LIMITED FUNCTIONALITY')
+
     if (!shell.which('git')) {
       shell.echo('Missing Required Package: git')
       shell.exit(1)
@@ -49,7 +51,7 @@ class CreateTrelloPowerup extends Command {
     const parameters = await inquirer.prompt([
       {
         name: 'name',
-        message: '[1/4] Name',
+        message: '[1/2] Name',
         type: 'input',
         default: 'my-powerup',
       },
@@ -64,7 +66,7 @@ class CreateTrelloPowerup extends Command {
       // },
       {
         name: 'capabilities',
-        message: '[3/4] Capabilities:',
+        message: '[2/2] Capabilities:',
         type: 'checkbox',
         choices: [
           {name: 'Attachment Section', value: 'attachment-sections'},
@@ -87,15 +89,15 @@ class CreateTrelloPowerup extends Command {
           {name: 'Show Settings', value: 'show-settings', checked: true},
         ],
       },
-      {
-        name: 'integrations',
-        message: '[4/4] Integrations:',
-        type: 'checkbox',
-        choices: [
-          {name: 'Optro Monetization', value: 'optro', checked: true},
-          {name: 'Google Analytics', value: 'ga'},
-        ],
-      },
+      // {
+      //   name: 'integrations',
+      //   message: '[4/4] Integrations:',
+      //   type: 'checkbox',
+      //   choices: [
+      //     {name: 'Optro Monetization', value: 'optro', checked: true},
+      //     {name: 'Google Analytics', value: 'ga'},
+      //   ],
+      // },
       {
         name: 'confirm',
         message: 'Confirm package creation? y/n',
@@ -109,19 +111,22 @@ class CreateTrelloPowerup extends Command {
       this.exit(0)
     }
 
+    const folderName = filenamify(parameters.name).replace(' ', '-')
+    console.log(folderName)
+
     // Create Directory
-    if (fs.existsSync(parameters.name)) {
-      this.error('The project folder specified already exists!  Exiting.')
-      this.exit(1)
-    } else {
-      fs.mkdirSync(path.join(process.cwd(), parameters.name))
-    }
+    // if (fs.existsSync(folderName)) {
+    //   this.error('The project folder specified already exists!  Exiting.')
+    //   this.exit(1)
+    // } else {
+    //   fs.mkdirSync(path.join(process.cwd(), folderName))
+    // }
 
     // 1. Clone the Template Repo
     this.log('[1/4] Cloning Template...')
     try {
-      await downloadRepo('https://github.com/optro-cloud/trello-powerup-full-sample.git', path.join(process.cwd(), parameters.name))
-      deleteFolder(path.join(process.cwd(), parameters.name, '.git'))
+      await downloadRepo(TEMPLATE_REPO, path.join(process.cwd(), folderName))
+      deleteFolder(path.join(process.cwd(), folderName, '.git'))
     } catch (error) {
       this.error('A fatal error occurred during cloning template', error)
       this.exit(1)
@@ -132,9 +137,9 @@ class CreateTrelloPowerup extends Command {
     try {
       const capabilitiesToRemove = ALL_CAPABILITIES.filter(capability => !parameters.capabilities.includes(capability))
       for (const capability of capabilitiesToRemove) {
-        deleteFolder(path.join(process.cwd(), parameters.name, 'src', capability))
+        deleteFolder(path.join(process.cwd(), folderName, 'src', capability))
       }
-      deleteFolder(path.join(process.cwd(), parameters.name, '.github', 'ISSUE_TEMPLATE'))
+      deleteFolder(path.join(process.cwd(), folderName, '.github', 'ISSUE_TEMPLATE'))
       deleteFile(path.join(process.cwd(), 'webpack.config.js'))
       deleteFile(path.join(process.cwd(), 'src', 'router.tsx'))
       deleteFile(path.join(process.cwd(), 'src', 'capabilities.ts'))
@@ -146,44 +151,44 @@ class CreateTrelloPowerup extends Command {
     // 3. Configure Dynamic Files
     this.log('[3/4] Configuring Dynamic Files...')
     try {
-      copyFile(path.join(__dirname, '..', 'templates', 'webpack.config.js'), path.join(process.cwd(), parameters.name, 'webpack.config.js'))
-      copyFile(path.join(__dirname, '..', 'templates', 'router.tsx'), path.join(process.cwd(), parameters.name, 'src', 'router.tsx'))
-      copyFile(path.join(__dirname, '..', 'templates', 'capabilities.ts'), path.join(process.cwd(), parameters.name, 'src', 'capabilities.tsx'))
+      copyFile(path.join(__dirname, '..', 'templates', 'webpack.config.js'), path.join(process.cwd(), folderName, 'webpack.config.js'))
+      copyFile(path.join(__dirname, '..', 'templates', 'router.tsx'), path.join(process.cwd(), folderName, 'src', 'router.tsx'))
+      copyFile(path.join(__dirname, '..', 'templates', 'capabilities.ts'), path.join(process.cwd(), folderName, 'src', 'capabilities.tsx'))
       const applicableCapabilities = ALL_HTML_BACKED_CAPABILITIES.filter(c => parameters.capabilities.includes(c))
       for (const capability of applicableCapabilities.reverse()) {
         // 3.1 - Webpack Config File
         replace.replaceInFileSync({
-          files: path.join(process.cwd(), parameters.name, 'webpack.config.js'),
+          files: path.join(process.cwd(), folderName, 'webpack.config.js'),
           from: WEBPACK_REPLACEMENT_STRING,
           to: getWebpackHtmlPlugin(capability),
         })
         // 3.2 React Router File
         replace.replaceInFileSync({
-          files: path.join(process.cwd(), parameters.name, 'src', 'router.tsx'),
+          files: path.join(process.cwd(), folderName, 'src', 'router.tsx'),
           from: REACT_ROUTER_MODULE_REPLACEMENT_STRING,
           to: getWebpackHtmlPlugin(capability),
         })
         replace.replaceInFileSync({
-          files: path.join(process.cwd(), parameters.name, 'src', 'router.tsx'),
+          files: path.join(process.cwd(), folderName, 'src', 'router.tsx'),
           from: REACT_ROUTER_LOADER_REPLACEMENT_STRING,
           to: getReactRouterLoader(capability),
         })
         // 3.3 Capabilities File
         replace.replaceInFileSync({
-          files: path.join(process.cwd(), parameters.name, 'src', 'capabilities.tsx'),
+          files: path.join(process.cwd(), folderName, 'src', 'capabilities.tsx'),
           from: CAPABILITIES_REPLACEMENT_STRING,
           to: getCapabilityModule(capability),
         })
       }
       // 3.4 Environmental Variables File
       writeToFile(
-        path.join(process.cwd(), parameters.name, '.env'),
-        getEnv('UNDEFINED', parameters.name, 'UNDEFINED', 'DISABLED')
+        path.join(process.cwd(), folderName, '.env'),
+        getEnv('UNDEFINED', folderName, 'UNDEFINED', 'DISABLED')
       )
       // 3.5 Cleanup Unused Dependencies
       if (!parameters.capabilities.includes('card-back-section')) {
         replace.replaceInFileSync({
-          files: path.join(process.cwd(), parameters.name, 'package.json'),
+          files: path.join(process.cwd(), folderName, 'package.json'),
           // TODO: Replace with RegEx
           from: `${getIndent(1)}"lottie-react": "^2.1.0",\r\n`,
           to: '',
@@ -191,7 +196,7 @@ class CreateTrelloPowerup extends Command {
       }
       if (!parameters.capabilities.includes('attachment-thumbnail')) {
         replace.replaceInFileSync({
-          files: path.join(process.cwd(), parameters.name, 'package.json'),
+          files: path.join(process.cwd(), folderName, 'package.json'),
           // TODO: Replace with RegEx
           from: `${getIndent(1)}"unique-names-generator": "^4.3.1",\r\n`,
           to: '',
@@ -199,7 +204,7 @@ class CreateTrelloPowerup extends Command {
       }
       if (!parameters.capabilities.includes('attachment-thumbnail')) {
         replace.replaceInFileSync({
-          files: path.join(process.cwd(), parameters.name, 'package.json'),
+          files: path.join(process.cwd(), folderName, 'package.json'),
           // TODO: Replace with RegEx
           from: `${getIndent(1)}"react-color": "^2.19.3",\r\n`,
           to: '',
@@ -213,7 +218,7 @@ class CreateTrelloPowerup extends Command {
     // 4. Install Dependencies
     this.log('[4/4] Installing Dependencies...')
     try {
-      execSync(`yarn --cwd ${path.join(process.cwd(), parameters.name)} install --silent`, {stdio: 'inherit'})
+      execSync(`yarn --cwd ${path.join(process.cwd(), folderName)} install --silent`, {stdio: 'inherit'})
     } catch (error) {
       this.error('A fatal error occurred during installing dependencies', error)
       this.exit(4)

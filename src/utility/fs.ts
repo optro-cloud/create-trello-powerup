@@ -1,9 +1,13 @@
-import * as git from 'nodegit'
+import git from 'nodegit'
 import * as shell from 'shelljs'
 import * as fs from 'fs'
 
 export async function downloadRepo(url: string, destination: string) {
-  await git.Clone.clone(url, destination)
+  try {
+    await git.Clone.clone(url, destination)
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 export function deleteFile(path: string) {
