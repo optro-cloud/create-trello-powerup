@@ -1,8 +1,9 @@
 {
-  "name": "create-trello-powerup",
+  "name": "@optro/create-trello-powerup",
   "description": "Easily create Trello Power-Ups from the Command Line",
   "version": "0.1.0",
   "author": "Optro",
+  "website": "https://www.optro.cloud",
   "bin": {
     "create-trello-powerup": "./bin/run"
   },
@@ -53,9 +54,13 @@
   "oclif": {
     "bin": "create-trello-powerup"
   },
-  "repository": "optro-cloud/create-trello-powerup",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/optro-cloud/create-trello-powerup.git"
+  },
   "scripts": {
     "posttest": "eslint . --ext .ts --config .eslintrc",
+    "build": "tsc",
     "prepack": "rimraf lib && tsc -b && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"

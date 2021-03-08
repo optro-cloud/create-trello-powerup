@@ -42,7 +42,7 @@ class CreateTrelloPowerup extends Command {
     this.log('Easily create new Trello Power-Ups with sample code and capabilities...')
     this.log('---')
 
-    this.log('PLEASE NOTE: THIS TOOL IS CURRENTLY IN BETA AND HAS LIMITED FUNCTIONALITY')
+    this.log('PLEASE NOTE: THIS TOOL IS CURRENTLY IN PRE-RELEASE AND HAS LIMITED FUNCTIONALITY (v0.1.0)')
 
     if (!shell.which('git')) {
       shell.echo('Missing Required Package: git')
@@ -202,7 +202,7 @@ class CreateTrelloPowerup extends Command {
     // 4. Install Dependencies
     this.log('[4/4] Installing Dependencies...')
     try {
-      execSync(`yarn --cwd ${path.join(process.cwd(), folderName)} install --silent`, {stdio: 'inherit'})
+      execSync(`yarn --cwd "${path.join(process.cwd(), folderName)}" install --silent`, {stdio: 'inherit'})
     } catch (error) {
       this.error('A fatal error occurred during installing dependencies', error)
       this.exit(4)

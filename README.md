@@ -17,16 +17,27 @@ The CLI can be started with a single command provided you have Node.js installed
 It guides you through the creation of a new Power-Up by asking questions to determine the capabilities that are enabled.
 
 ```sh-session
-$ npx create-trello-powerup
+$ npx @optro/create-trello-powerup
 
 ---
 Create-Trello-PowerUp
+Easily create new Trello Power-Ups with sample code and capabilities...
 ---
 
-? [1/4] Name My Power-Up Name
-? [3/4] Capabilities: Board Button, Card Back Section
-? [4/4] Integrations: Optro Monetization
-? Confirm package creation? y/n Yes
+? [1/2] Name?
+> My Example Power-Up
+
+? [2/2] Capabilities: (Press <space> to select, <a> to toggle all, <i> to invert selection)
+>( ) Attachment Section
+ ( ) Attachment Thumbnail
+ ( ) Authorization Status
+ (*) Board Button
+ (*) Card Back Section
+ (*) Card Badges
+ (*) Card Button
+(Move up and down to reveal more choices)
+
+? [3/3] Confirm package creation? y/n (Y/n)
 
 [1/4] Cloning Template...
 [2/4] Deleting Unused Resources...
