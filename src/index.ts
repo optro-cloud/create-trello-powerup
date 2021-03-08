@@ -1,6 +1,6 @@
 import {Command, flags} from '@oclif/command'
 import * as inquirer from 'inquirer'
-import {getCapabilityModule, getEnv, getIndent, getReactRouterLoader, getWebpackHtmlPlugin} from './utility/string'
+import {getCapabilityModule, getEnv, getReactRouterLoader, getWebpackHtmlPlugin} from './utility/string'
 import * as path from 'path'
 import {execSync} from 'child_process'
 import * as shell from 'shelljs'
@@ -14,12 +14,13 @@ import {
 } from './utility/constants'
 import {
   copyFile,
+  deleteDependency,
   deleteFile,
   deleteFolder,
+  doesFolderExist,
   downloadRepo,
   writeToFile,
 } from './utility/fs'
-import * as fs from "fs";
 
 class CreateTrelloPowerup extends Command {
   static description = 'Easily create Trello Power-Ups from the Command Line'
@@ -34,7 +35,7 @@ class CreateTrelloPowerup extends Command {
   async run() {
     // Read Arguments
     const {args, flags} = this.parse(CreateTrelloPowerup)
-
+    this.debug(args, flags)
     // Show Introduction
     this.log('---')
     this.log('Create-Trello-PowerUp')
@@ -115,28 +116,15 @@ class CreateTrelloPowerup extends Command {
     const folderName = filenamify(parameters.name).replace(' ', '-')
 
     // Check if Directory Exists
-    if (fs.existsSync(folderName)) {
+    if (doesFolderExist(folderName)) {
       this.error('The project folder specified already exists!  Exiting.')
       this.exit(1)
     }
-
-    // Create Directory
-    if (fs.existsSync(folderName)) {
-      this.error('The project folder specified already exists!  Exiting.')
-      this.exit(1)
-    } else {
-      fs.mkdirSync(path.join(process.cwd(), folderName))
-    }
->>>>>>> 91c9f0f65210f9382dc3ad8a813530353aef0a31
 
     // 1. Clone the Template Repo
     this.log('[1/4] Cloning Template...')
     try {
-<<<<<<< HEAD
       await downloadRepo(TEMPLATE_REPO, path.join(process.cwd(), folderName))
-=======
-      await downloadRepo('https://github.com/optro-cloud/trello-powerup-full-sample.git', path.join(process.cwd(), folderName))
->>>>>>> 91c9f0f65210f9382dc3ad8a813530353aef0a31
       deleteFolder(path.join(process.cwd(), folderName, '.git'))
     } catch (error) {
       this.error('A fatal error occurred during cloning template', error)
@@ -194,32 +182,17 @@ class CreateTrelloPowerup extends Command {
       // 3.4 Environmental Variables File
       writeToFile(
         path.join(process.cwd(), folderName, '.env'),
-        getEnv('UNDEFINED', folderName, 'UNDEFINED', 'DISABLED')
+        getEnv('UNDEFINED', folderName, 'UNDEFINED', 'DISABLED'),
       )
       // 3.5 Cleanup Unused Dependencies
       if (!parameters.capabilities.includes('card-back-section')) {
-        replace.replaceInFileSync({
-          files: path.join(process.cwd(), folderName, 'package.json'),
-          // TODO: Replace with RegEx
-          from: `${getIndent(1)}"lottie-react": "^2.1.0",\r\n`,
-          to: '',
-        })
+        deleteDependency(path.join(process.cwd(), folderName, 'package.json'), 'lottie-react')
       }
       if (!parameters.capabilities.includes('attachment-thumbnail')) {
-        replace.replaceInFileSync({
-          files: path.join(process.cwd(), folderName, 'package.json'),
-          // TODO: Replace with RegEx
-          from: `${getIndent(1)}"unique-names-generator": "^4.3.1",\r\n`,
-          to: '',
-        })
+        deleteDependency(path.join(process.cwd(), folderName, 'package.json'), 'unique-names-generator')
       }
       if (!parameters.capabilities.includes('attachment-thumbnail')) {
-        replace.replaceInFileSync({
-          files: path.join(process.cwd(), folderName, 'package.json'),
-          // TODO: Replace with RegEx
-          from: `${getIndent(1)}"react-color": "^2.19.3",\r\n`,
-          to: '',
-        })
+        deleteDependency(path.join(process.cwd(), folderName, 'package.json'), 'react-color')
       }
     } catch (error) {
       this.error('A fatal error occurred during configuring dynamic files', error)
