@@ -80,17 +80,18 @@ class CreateTrelloPowerup extends Command {
           {name: 'Show Settings', value: 'show-settings', checked: true},
         ],
       },
-      {
-        name: 'monetization',
-        message: '[3/4] Monetization Support:',
-        type: 'checkbox',
-        choices: [
-          {name: 'Optro (www.optro.cloud)', value: 'optro', checked: true},
-        ],
-      },
+      // TODO: Monetization Support
+      // {
+      //   name: 'monetization',
+      //   message: '[3/4] Monetization Support:',
+      //   type: 'checkbox',
+      //   choices: [
+      //     {name: 'Optro (www.optro.cloud)', value: 'optro', checked: true},
+      //   ],
+      // },
       {
         name: 'confirm',
-        message: '[4/4] Confirm package creation?',
+        message: '[3/3] Confirm package creation?',
         type: 'confirm',
         default: true,
       },
