@@ -42,8 +42,6 @@ class CreateTrelloPowerup extends Command {
     this.log('Easily create new Trello Power-Ups with sample code and capabilities...')
     this.log('---')
 
-    this.log('PLEASE NOTE: THIS TOOL IS CURRENTLY IN PRE-RELEASE AND HAS LIMITED FUNCTIONALITY (v0.1.0)')
-
     if (!shell.which('git')) {
       shell.echo('Missing Required Package: git')
       shell.exit(1)
@@ -53,22 +51,13 @@ class CreateTrelloPowerup extends Command {
     const parameters = await inquirer.prompt([
       {
         name: 'name',
-        message: '[1/2] Name',
+        message: '[1/4] Name',
         type: 'input',
         default: 'my-powerup',
       },
-      // {
-      //   name: 'language',
-      //   message: '[2/4] Language:',
-      //   type: 'list',
-      //   choices: [
-      //     {name: 'TypeScript', value: 'typescript'},
-      //     {name: 'JavaScript', value: 'javascript'},
-      //   ],
-      // },
       {
         name: 'capabilities',
-        message: '[2/2] Capabilities:',
+        message: '[2/4] Capabilities:',
         type: 'checkbox',
         choices: [
           {name: 'Attachment Section', value: 'attachment-sections'},
@@ -91,18 +80,17 @@ class CreateTrelloPowerup extends Command {
           {name: 'Show Settings', value: 'show-settings', checked: true},
         ],
       },
-      // {
-      //   name: 'integrations',
-      //   message: '[4/4] Integrations:',
-      //   type: 'checkbox',
-      //   choices: [
-      //     {name: 'Optro Monetization', value: 'optro', checked: true},
-      //     {name: 'Google Analytics', value: 'ga'},
-      //   ],
-      // },
+      {
+        name: 'monetization',
+        message: '[3/4] Monetization Support:',
+        type: 'checkbox',
+        choices: [
+          {name: 'Optro (www.optro.cloud)', value: 'optro', checked: true},
+        ],
+      },
       {
         name: 'confirm',
-        message: 'Confirm package creation? y/n',
+        message: '[4/4] Confirm package creation?',
         type: 'confirm',
         default: true,
       },
@@ -157,7 +145,7 @@ class CreateTrelloPowerup extends Command {
       for (const capability of applicableCapabilities.reverse()) {
         // 3.1 - Webpack Config File
         replace.replaceInFileSync({
-          files: path.join(process.cwd(), folderName, 'webpack.config.js'),
+          files: path.join(process.cwd(), folderName, 'webpack.config.ts'),
           from: WEBPACK_REPLACEMENT_STRING,
           to: getWebpackHtmlPlugin(capability),
         })
@@ -165,7 +153,7 @@ class CreateTrelloPowerup extends Command {
         replace.replaceInFileSync({
           files: path.join(process.cwd(), folderName, 'src', 'router.tsx'),
           from: REACT_ROUTER_MODULE_REPLACEMENT_STRING,
-          to: getWebpackHtmlPlugin(capability),
+          to: getReactRouterLoader(capability),
         })
         replace.replaceInFileSync({
           files: path.join(process.cwd(), folderName, 'src', 'router.tsx'),
