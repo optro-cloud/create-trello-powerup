@@ -128,7 +128,7 @@ class CreateTrelloPowerup extends Command {
         deleteFolder(path.join(process.cwd(), folderName, 'src', capability))
       }
       deleteFolder(path.join(process.cwd(), folderName, '.github', 'ISSUE_TEMPLATE'))
-      deleteFile(path.join(process.cwd(), 'webpack.config.js'))
+      deleteFile(path.join(process.cwd(), 'webpack.config.ts'))
       deleteFile(path.join(process.cwd(), 'src', 'router.tsx'))
       deleteFile(path.join(process.cwd(), 'src', 'capabilities.ts'))
     } catch (error) {
@@ -139,7 +139,7 @@ class CreateTrelloPowerup extends Command {
     // 3. Configure Dynamic Files
     this.log('[3/4] Configuring Dynamic Files...')
     try {
-      copyFile(path.join(__dirname, '..', 'templates', 'webpack.config.js'), path.join(process.cwd(), folderName, 'webpack.config.js'))
+      copyFile(path.join(__dirname, '..', 'templates', 'webpack.config.js'), path.join(process.cwd(), folderName, 'webpack.config.ts'))
       copyFile(path.join(__dirname, '..', 'templates', 'router.tsx'), path.join(process.cwd(), folderName, 'src', 'router.tsx'))
       copyFile(path.join(__dirname, '..', 'templates', 'capabilities.ts'), path.join(process.cwd(), folderName, 'src', 'capabilities.tsx'))
       const applicableCapabilities = ALL_HTML_BACKED_CAPABILITIES.filter(c => parameters.capabilities.includes(c))
