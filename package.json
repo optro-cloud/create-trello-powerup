@@ -1,7 +1,7 @@
 {
   "name": "@optro/create-trello-powerup",
   "description": "Easily create Trello Power-Ups from the Command Line",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "author": "Optro",
   "website": "https://www.optro.cloud",
   "bin": {
