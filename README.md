@@ -9,17 +9,20 @@
 
 This package enables you to easily create Trello Power-Ups from the Command Line.
 
+Try it today with `npx @optro/create-trello-powerup`
+
 ## Features
 
 This command line tool enables you to create Trello Power-Ups easily and can generate a new project with everything you need to get going.
 
 - A Power-Up written with TypeScript, with a React front-end
-- Single command development mode for fast local development with ngrok (`yarn watch`)
+- Single command development mode for fast local development with ngrok using `yarn watch`
 - Automatic refresh of the React front-end following local changes
-- Commands for building a static website (`yarn build`) and a simple node.js server for hosting (`yarn build && yarn start`)
+- Build a static website from the source with `yarn build`
+- Run a simple node.js server for hosting `yarn build && yarn start`
 - A Dockerfile for running with Docker
 
-Check the Readme of the generated project for more information
+Check the [Readme](https://github.com/optro-cloud/trello-powerup-full-sample) of the generated project for help getting started with the project.
 
 ## Requirements
 
