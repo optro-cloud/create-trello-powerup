@@ -26,7 +26,7 @@ Check the [Readme](https://github.com/optro-cloud/trello-powerup-full-sample) of
 
 ## Requirements
 
-You need to have the following 2 dependencies installed on your system prior to running `npx @optro/create-trello-powerup`:
+You need to have the following dependencies installed on your system prior to using the CLI:
 
 - Node.js ≥12
 - Git
