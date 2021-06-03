@@ -23,7 +23,7 @@ export function getPascalCase(capability: string) {
 export function getWebpackHtmlPlugin(capability: string) {
   return `${WEBPACK_REPLACEMENT_STRING}
 ${getIndent(2)}new HtmlWebpackPlugin({\r
-${getIndent(3)}chunks: ['${capability}'],\r
+${getIndent(3)}chunks: ['addon'],\r
 ${getIndent(3)}template: 'templates/react.hbs',\r
 ${getIndent(3)}filename: '${getCapabilityFolderName(capability)}.html',\r
 ${getIndent(3)}templateParameters: {\r
