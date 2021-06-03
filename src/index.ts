@@ -223,12 +223,14 @@ class CreateTrelloPowerup extends Command {
       // 3.4 Environmental Variables File
       const powerupId = monetizationParameters && monetizationParameters.powerupId ? monetizationParameters.powerupId : 'UNSPECIFIED'
       const apiKey = monetizationParameters && monetizationParameters.apiKey ? monetizationParameters.apiKey : 'UNSPECIFIED'
+      const licenseType = monetizationParameters && monetizationParameters.licenseType ? monetizationParameters.licenseType : 'UNSPECIFIED'
       writeToFile(
         path.join(process.cwd(), folderName, '.env'),
         getEnv(
           powerupId,
           folderName,
-          apiKey
+          apiKey,
+          licenseType
         )
       )
       // 3.5 Cleanup Unused Dependencies

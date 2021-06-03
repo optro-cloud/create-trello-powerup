@@ -58,7 +58,7 @@ export function getCapabilityModule(capability: string) {
     '${capability}': ${CAPABILITY_MODULES[capability]},`
 }
 
-export function getEnv(id: string, name: string, optroApiKey: string) {
+export function getEnv(id: string, name: string, optroApiKey: string, licenseType: string) {
   return `NODE_ENV=development
 PORT=3000
 POWERUP_NAME=${name}
@@ -66,5 +66,6 @@ POWERUP_ID=${id}
 POWERUP_APP_KEY=UNSPECIFIED
 POWERUP_URL=https://optro-cloud.github.io/trello-powerup-full-sample
 CONTEXT_PATH=/
-OPTRO_API_KEY=${optroApiKey}`
+OPTRO_API_KEY=${optroApiKey}
+OPTRO_LICENSE_TYPE=${licenseType}`
 }
