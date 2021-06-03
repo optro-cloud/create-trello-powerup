@@ -1,17 +1,17 @@
-require('dotenv').config({path: `${__dirname}/.env`});
-const webpack = require('webpack');
-const path = require('path');
-import * as fs from 'fs';
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const dev = process.env.NODE_ENV !== 'production';
+require('dotenv').config({path: `${__dirname}/.env`})
+const webpack = require('webpack')
+const path = require('path')
+import * as fs from 'fs'
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const dev = process.env.NODE_ENV !== 'production'
 // Uncomment if you'd like to analyze the Webpack Bundles
-// const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
-const appDirectory = fs.realpathSync(process.cwd());
-const resolveApp = (relativePath: string) => path.resolve(appDirectory, relativePath);
+const appDirectory = fs.realpathSync(process.cwd())
+const resolveApp = (relativePath: string) => path.resolve(appDirectory, relativePath)
 
 module.exports = (env: any) => {
   return ({
@@ -101,66 +101,6 @@ module.exports = (env: any) => {
           powerup_name: process.env.POWERUP_NAME
         }
       }),
-      new HtmlWebpackPlugin({
-        chunks: ['addon'],
-        template: 'templates/react.hbs',
-        favicon: 'static/favicon.png',
-        filename: 'attachment-section.html',
-        templateParameters: {
-          powerup_name: process.env.POWERUP_NAME,
-          powerup_app_key: process.env.POWERUP_APP_KEY
-        }
-      }),
-      new HtmlWebpackPlugin({
-        chunks: ['addon'],
-        template: 'templates/react.hbs',
-        favicon: 'static/favicon.png',
-        filename: 'card-button.html',
-        templateParameters: {
-          powerup_name: process.env.POWERUP_NAME,
-          powerup_app_key: process.env.POWERUP_APP_KEY
-        }
-      }),
-      new HtmlWebpackPlugin({
-        chunks: ['addon'],
-        template: 'templates/react.hbs',
-        favicon: 'static/favicon.png',
-        filename: 'card-back-section.html',
-        templateParameters: {
-          powerup_name: process.env.POWERUP_NAME,
-          powerup_app_key: process.env.POWERUP_APP_KEY
-        }
-      }),
-      new HtmlWebpackPlugin({
-        chunks: ['addon'],
-        template: 'templates/react.hbs',
-        favicon: 'static/favicon.png',
-        filename: 'board-button.html',
-        templateParameters: {
-          powerup_name: process.env.POWERUP_NAME,
-          powerup_app_key: process.env.POWERUP_APP_KEY
-        }
-      }),
-      new HtmlWebpackPlugin({
-        chunks: ['addon'],
-        template: 'templates/react.hbs',
-        favicon: 'static/favicon.png',
-        filename: 'show-authorization.html',
-        templateParameters: {
-          powerup_name: process.env.POWERUP_NAME,
-          powerup_app_key: process.env.POWERUP_APP_KEY
-        }
-      }),
-      new HtmlWebpackPlugin({
-        chunks: ['addon'],
-        template: 'templates/react.hbs',
-        favicon: 'static/favicon.png',
-        filename: 'show-settings.html',
-        templateParameters: {
-          powerup_name: process.env.POWERUP_NAME,
-          powerup_app_key: process.env.POWERUP_APP_KEY
-        }
-      }),
       !env.WEBPACK_BUILD && new webpack.HotModuleReplacementPlugin(),
       !env.WEBPACK_BUILD && new ReactRefreshWebpackPlugin(),
     ].filter(Boolean),
@@ -215,5 +155,5 @@ module.exports = (env: any) => {
       }
     } : undefined,
     mode: env.WEBPACK_BUILD ? 'production' : 'development'
-  });
-};
+  })
+}
