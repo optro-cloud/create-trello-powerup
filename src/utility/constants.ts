@@ -8,6 +8,8 @@ export const REACT_ROUTER_LOADER_REPLACEMENT_STRING = '// Lazy Loaders'
 
 export const CAPABILITIES_REPLACEMENT_STRING = 'window.TrelloPowerUp.initialize({'
 
+export const CAPABILITIES_IMPORT_REPLACEMENT_STRING = '// Capability Imports Here'
+
 export const ALL_CAPABILITIES = [
   'attachment-sections',
   'attachment-thumbnail',
@@ -31,12 +33,9 @@ export const ALL_CAPABILITIES = [
 
 export const ALL_HTML_BACKED_CAPABILITIES = [
   'attachment-sections',
-  'attachment-thumbnail',
   'board-buttons',
   'card-buttons',
   'card-back-section',
-  'card-badges',
-  'card-detail-badges',
   'show-settings',
 ]
 

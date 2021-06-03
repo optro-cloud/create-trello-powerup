@@ -1,13 +1,12 @@
-import React, { Suspense } from "react";
-import {BrowserRouter as Router, Route} from "react-router-dom";
-import { hot } from "react-hot-loader/root";
+import React, { Suspense } from 'react';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 
 // Lazy Loaders
 
 function PowerupRouter() {
   return (
     <div>
-      <Suspense fallback={<div style={{ margin: "6px" }}>Loading...</div>}>
+      <Suspense fallback={<div style={{ margin: '6px' }}>Loading...</div>}>
         <Router basename={process.env.CONTEXT_PATH || undefined}>
         </Router>
       </Suspense>
@@ -15,4 +14,4 @@ function PowerupRouter() {
   );
 }
 
-export default hot(PowerupRouter);
+export default PowerupRouter;
