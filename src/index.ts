@@ -230,8 +230,8 @@ class CreateTrelloPowerup extends Command {
           powerupId,
           folderName,
           apiKey,
-          licenseType
-        )
+          licenseType,
+        ),
       )
       // 3.5 Cleanup Unused Dependencies
       if (!parameters.capabilities.includes('card-back-section')) {
