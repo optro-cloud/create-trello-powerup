@@ -10,6 +10,22 @@ export const CAPABILITIES_REPLACEMENT_STRING = 'window.TrelloPowerUp.initialize(
 
 export const CAPABILITIES_IMPORT_REPLACEMENT_STRING = '// Capability Imports Here'
 
+export const REACT_ROUTER_IMPORT_REPLACEMENT_STRING = 'import {TrelloProvider} from \'@optro/ui-react\';'
+
+export const REACT_ROUTER_CLIENT_REPLACEMENT_STRING = 'const t = window.TrelloPowerUp.iframe();'
+
+export const REACT_ROUTER_CLIENT_PROVIDER_REPLACEMENT_STRING = '<TrelloProvider t={t}>'
+
+export const REACT_ROUTER_CLIENT_PROVIDER_CLOSE_REPLACEMENT_STRING = '</Suspense>'
+
+export const CARD_BUTTON_CONDITIONAL_IMPORT_REPLACEMENT_STRING = 'import {useProvidedTrello} from \'@optro/ui-react\';'
+
+export const CARD_BUTTON_CONDITIONAL_START_REPLACEMENT_STRING = '<div className="color-picker-container">'
+
+export const CARD_BUTTON_CONDITIONAL_END_REPLACEMENT_STRING = '<label htmlFor="note">'
+
+export const CARD_BUTTON_STATUS_REPLACEMENT_STRING = '<div id="container">'
+
 export const ALL_CAPABILITIES = [
   'attachment-sections',
   'attachment-thumbnail',

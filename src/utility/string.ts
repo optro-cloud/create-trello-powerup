@@ -2,7 +2,12 @@ import camelCase from 'camelcase'
 import {
   CAPABILITIES_IMPORT_REPLACEMENT_STRING,
   CAPABILITIES_REPLACEMENT_STRING,
-  CAPABILITY_MODULES,
+  CAPABILITY_MODULES, CARD_BUTTON_CONDITIONAL_END_REPLACEMENT_STRING,
+  CARD_BUTTON_CONDITIONAL_START_REPLACEMENT_STRING, CARD_BUTTON_STATUS_REPLACEMENT_STRING,
+  REACT_ROUTER_CLIENT_PROVIDER_CLOSE_REPLACEMENT_STRING,
+  REACT_ROUTER_CLIENT_PROVIDER_REPLACEMENT_STRING,
+  REACT_ROUTER_CLIENT_REPLACEMENT_STRING,
+  REACT_ROUTER_IMPORT_REPLACEMENT_STRING,
   REACT_ROUTER_LOADER_REPLACEMENT_STRING,
   REACT_ROUTER_MODULE_REPLACEMENT_STRING,
   WEBPACK_REPLACEMENT_STRING,
@@ -45,6 +50,54 @@ export function getReactRouterLoader(capability: string) {
   const folder = getCapabilityFolderName(capability)
   return `${REACT_ROUTER_LOADER_REPLACEMENT_STRING}
 const ${getPascalCase(folder)} = React.lazy(() => import('./${folder}/${getPascalCase(folder)}'))`
+}
+
+export function getReactRouterMonetizationImport() {
+  return `import {LicenseProvider, TrelloProvider} from '@optro/ui-react';
+import {OptroLicenseApi} from '@optro/api-client';
+import '@optro/ui-react/bundle.css';`
+}
+
+export function getReactRouterMonetizationClient() {
+  return `${REACT_ROUTER_CLIENT_REPLACEMENT_STRING}
+const optroClient = new OptroLicenseApi(process.env.OPTRO_API_KEY as string, process.env.POWERUP_ID as string);`
+}
+
+export function getReactRouterMonetizationProvider() {
+  return `${REACT_ROUTER_CLIENT_PROVIDER_REPLACEMENT_STRING}
+<LicenseProvider optroClient={optroClient} apiKey={process.env.OPTRO_API_KEY as string} licenseType={'board'} powerupId={process.env.POWERUP_ID as string}>`
+}
+
+export function getReactRouterMonetizationProviderClose() {
+  return `${REACT_ROUTER_CLIENT_PROVIDER_CLOSE_REPLACEMENT_STRING}
+</LicenseProvider>`
+}
+
+export function getCardButtonMonetizationImport() {
+  return 'import { useProvidedTrello , LicenseConditional, LicenseStatus} from \'@optro/ui-react\';'
+}
+
+export function getLicenseStatusTag() {
+  return `${CARD_BUTTON_STATUS_REPLACEMENT_STRING}
+<LicenseStatus/>`
+}
+
+export function getCardButtonMonetizationStartTag() {
+  return `<LicenseConditional unlicensed={
+    <div className="color-picker-container unlicensed">
+        <CirclePicker
+            color={'#0079bf'}
+            colors={['#0079bf', '#70b500', '#ff9f1a', '#eb5a46', '#f2d600', '#c377e0']}
+           />
+    </div>
+}
+>
+${CARD_BUTTON_CONDITIONAL_START_REPLACEMENT_STRING}`
+}
+
+export function getCardButtonMonetizationEndTag() {
+  return `</LicenseConditional>
+${CARD_BUTTON_CONDITIONAL_END_REPLACEMENT_STRING}`
 }
 
 export function getCapabilityImport(capability: string) {
