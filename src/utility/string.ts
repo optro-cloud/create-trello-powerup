@@ -7,7 +7,6 @@ import {
   REACT_ROUTER_CLIENT_PROVIDER_CLOSE_REPLACEMENT_STRING,
   REACT_ROUTER_CLIENT_PROVIDER_REPLACEMENT_STRING,
   REACT_ROUTER_CLIENT_REPLACEMENT_STRING,
-  REACT_ROUTER_IMPORT_REPLACEMENT_STRING,
   REACT_ROUTER_LOADER_REPLACEMENT_STRING,
   REACT_ROUTER_MODULE_REPLACEMENT_STRING,
   WEBPACK_REPLACEMENT_STRING,
@@ -39,7 +38,7 @@ ${getIndent(2)}}),`
 }
 
 export function getReactRouterRoute(capability: string) {
-  const name = getCapabilityFolderName(capability);
+  const name = getCapabilityFolderName(capability)
   return `${REACT_ROUTER_MODULE_REPLACEMENT_STRING}
 ${getIndent(4)}<Route path={\`/${name}.html\`}>
 ${getIndent(5)}<${getPascalCase(name)} />
