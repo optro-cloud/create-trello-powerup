@@ -111,11 +111,11 @@ class CreateTrelloPowerup extends Command {
       monetizationParameters = await inquirer.prompt([
         {
           name: 'licenseType',
-          message: '5. Should your Power-Up be licensed by Board or Member?',
+          message: '5. Should your Power-Up be licensed by Board or User?',
           type: 'list',
           choices: [
             {name: 'License by Trello Board', value: 'board'},
-            {name: 'License by Trello Member', value: 'member'},
+            {name: 'License by Trello User', value: 'member'},
           ],
         },
         {
