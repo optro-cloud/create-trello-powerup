@@ -48,3 +48,11 @@ export function deleteDependency(filePath: string, packageName: string) {
   }
   writeJsonFile(filePath, packageJson)
 }
+
+export function addDependency(filePath: string, packageName: string, packageVersion: string) {
+  const packageJson: any = readJsonFile(filePath)
+  if (!packageJson.dependencies[packageName]) {
+    packageJson.dependencies[packageName] = packageVersion
+  }
+  writeJsonFile(filePath, packageJson)
+}

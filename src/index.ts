@@ -3,8 +3,15 @@ import * as inquirer from 'inquirer'
 import {
   getCapabilityImport,
   getCapabilityModule,
-  getEnv,
+  getCardButtonMonetizationEndTag,
+  getCardButtonMonetizationImport,
+  getCardButtonMonetizationStartTag,
+  getEnv, getLicenseStatusTag,
   getReactRouterLoader,
+  getReactRouterMonetizationClient,
+  getReactRouterMonetizationImport,
+  getReactRouterMonetizationProvider,
+  getReactRouterMonetizationProviderClose,
   getReactRouterRoute,
   getWebpackHtmlPlugin,
 } from './utility/string'
@@ -18,12 +25,21 @@ import {
   ALL_HTML_BACKED_CAPABILITIES,
   CAPABILITIES_IMPORT_REPLACEMENT_STRING,
   CAPABILITIES_REPLACEMENT_STRING,
+  CARD_BUTTON_CONDITIONAL_END_REPLACEMENT_STRING,
+  CARD_BUTTON_CONDITIONAL_IMPORT_REPLACEMENT_STRING,
+  CARD_BUTTON_CONDITIONAL_START_REPLACEMENT_STRING,
+  CARD_BUTTON_STATUS_REPLACEMENT_STRING,
+  REACT_ROUTER_CLIENT_PROVIDER_CLOSE_REPLACEMENT_STRING,
+  REACT_ROUTER_CLIENT_PROVIDER_REPLACEMENT_STRING,
+  REACT_ROUTER_CLIENT_REPLACEMENT_STRING,
+  REACT_ROUTER_IMPORT_REPLACEMENT_STRING,
   REACT_ROUTER_LOADER_REPLACEMENT_STRING,
   REACT_ROUTER_MODULE_REPLACEMENT_STRING,
   TEMPLATE_REPO,
   WEBPACK_REPLACEMENT_STRING,
 } from './utility/constants'
 import {
+  addDependency,
   copyFile,
   deleteDependency,
   deleteFile,
@@ -233,6 +249,59 @@ class CreateTrelloPowerup extends Command {
           licenseType,
         ),
       )
+      // 3.6 Monetization
+      if (parameters.monetize) {
+        // 3.6.1 Add Dependency for the Optro API Client
+        addDependency(path.join(process.cwd(), folderName, 'package.json'), '@optro/api-client', '^1.0.3')
+        // 3.6.2 Add License Provider to Router
+        replace.replaceInFileSync({
+          files: path.join(process.cwd(), folderName, 'src', 'router.tsx'),
+          from: REACT_ROUTER_IMPORT_REPLACEMENT_STRING,
+          to: getReactRouterMonetizationImport(),
+        })
+        replace.replaceInFileSync({
+          files: path.join(process.cwd(), folderName, 'src', 'router.tsx'),
+          from: REACT_ROUTER_CLIENT_REPLACEMENT_STRING,
+          to: getReactRouterMonetizationClient(),
+        })
+        replace.replaceInFileSync({
+          files: path.join(process.cwd(), folderName, 'src', 'router.tsx'),
+          from: REACT_ROUTER_CLIENT_PROVIDER_REPLACEMENT_STRING,
+          to: getReactRouterMonetizationProvider(),
+        })
+        replace.replaceInFileSync({
+          files: path.join(process.cwd(), folderName, 'src', 'router.tsx'),
+          from: REACT_ROUTER_CLIENT_PROVIDER_CLOSE_REPLACEMENT_STRING,
+          to: getReactRouterMonetizationProviderClose(),
+        })
+        // 3.6.2 Add Example Licensed Feature (Colorized Cards)
+        if (parameters.capabilities.includes('card-buttons')) {
+          // 3.6.3 Add import for LicenseConditional to the Card Button component
+          replace.replaceInFileSync({
+            files: path.join(process.cwd(), folderName, 'src', 'card-button', 'CardButton.tsx'),
+            from: CARD_BUTTON_CONDITIONAL_IMPORT_REPLACEMENT_STRING,
+            to: getCardButtonMonetizationImport(),
+          })
+          // 3.6.4 Add LicenseConditional to the Render Code
+          replace.replaceInFileSync({
+            files: path.join(process.cwd(), folderName, 'src', 'card-button', 'CardButton.tsx'),
+            from: CARD_BUTTON_CONDITIONAL_START_REPLACEMENT_STRING,
+            to: getCardButtonMonetizationStartTag(),
+          })
+          replace.replaceInFileSync({
+            files: path.join(process.cwd(), folderName, 'src', 'card-button', 'CardButton.tsx'),
+            from: CARD_BUTTON_CONDITIONAL_END_REPLACEMENT_STRING,
+            to: getCardButtonMonetizationEndTag(),
+          })
+          // 3.6.5 Add License Status Display
+          replace.replaceInFileSync({
+            files: path.join(process.cwd(), folderName, 'src', 'card-button', 'CardButton.tsx'),
+            from: CARD_BUTTON_STATUS_REPLACEMENT_STRING,
+            to: getLicenseStatusTag(),
+          })
+        }
+      }
+
       // 3.5 Cleanup Unused Dependencies
       if (!parameters.capabilities.includes('card-back-section')) {
         deleteDependency(path.join(process.cwd(), folderName, 'package.json'), 'lottie-react')
