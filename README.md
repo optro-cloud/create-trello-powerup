@@ -6,6 +6,7 @@
 [![Version](https://img.shields.io/npm/v/@optro/create-trello-powerup.svg)](https://npmjs.org/package/@optro/create-trello-powerup)
 [![Downloads/week](https://img.shields.io/npm/dw/@optro/create-trello-powerup.svg)](https://npmjs.org/package/@optro/create-trello-powerup)
 [![License](https://img.shields.io/npm/l/@optro/create-trello-powerup.svg)](https://github.com/optro-cloud/create-trello-powerup/blob/master/package.json)
+[![Lint](https://github.com/optro-cloud/create-trello-powerup/actions/workflows/lint.yml/badge.svg)](https://github.com/optro-cloud/create-trello-powerup/actions/workflows/lint.yml)
 
 This package enables you to easily create Trello Power-Ups from the Command Line.
 
