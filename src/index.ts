@@ -37,7 +37,7 @@ import {
   REACT_ROUTER_MODULE_REPLACEMENT_STRING,
   TEMPLATE_REPO,
   WEBPACK_REPLACEMENT_STRING,
-} from './utility/constants';
+} from './utility/constants'
 import {
   addDependency,
   copyFile,
@@ -81,10 +81,11 @@ class CreateTrelloPowerup extends Command {
         message: '1. What is the Power-Up Name?',
         type: 'input',
         default: 'my-powerup',
+        when: (_answers => !args.powerupName),
       },
       {
         name: 'capabilities',
-        message: '2. What Capabilities should be enabled?',
+        message: `${args.powerupName ? '1' : '2'}. What Capabilities should be enabled?`,
         type: 'checkbox',
         choices: [
           {name: 'Attachment Section', value: 'attachment-section'},
@@ -108,62 +109,20 @@ class CreateTrelloPowerup extends Command {
         ],
       },
       {
-        name: 'appKey',
-        message: '3. What is your Trello App Key? (get from https://trello.com/app-key)',
-        type: 'input',
-        default: 'UNSPECIFIED',
-      },
-      {
-        name: 'monetize',
-        message: '4. Do you want to enable Monetization?',
-        type: 'confirm',
-        default: false,
-      },
-    ])
-
-    let monetizationParameters = null
-
-    if (parameters.monetize) {
-      monetizationParameters = await inquirer.prompt([
-        {
-          name: 'licenseType',
-          message: '5. Should your Power-Up be licensed by Board or User?',
-          type: 'list',
-          choices: [
-            {name: 'License by Trello Board', value: 'board'},
-            {name: 'License by Trello User', value: 'member'},
-          ],
-        },
-        {
-          name: 'powerupId',
-          message: '6. What is your Power-Up ID? (get from https://www.trello.com/power-ups/admin)',
-          type: 'input',
-          default: 'UNSPECIFIED',
-        },
-        {
-          name: 'apiKey',
-          message: '7. Optro API Key? (get from https://vendor.optro.cloud)',
-          type: 'input',
-          default: 'UNSPECIFIED',
-        },
-      ])
-    }
-
-    const confirmParameters = await inquirer.prompt([
-      {
         name: 'confirm',
-        message: `${parameters.monetize ? '6' : '4'}. Confirm?`,
+        message: `${args.powerupName ? '2' : '3'}. Confirm Power-Up generation?`,
         type: 'confirm',
         default: true,
+        when: (answers => answers),
       },
     ])
 
-    if (!confirmParameters.confirm) {
+    if (!parameters.confirm) {
       this.error('User Cancelled Project Generation')
       this.exit(0)
     }
 
-    const folderName = filenamify(parameters.name).replace(' ', '-')
+    const folderName = args.powerupName ?? filenamify(parameters.name).replace(' ', '-')
 
     // Check if Directory Exists
     if (doesFolderExist(folderName)) {
@@ -193,7 +152,7 @@ class CreateTrelloPowerup extends Command {
       deleteFile(path.join(process.cwd(), 'src', 'router.tsx'))
       deleteFile(path.join(process.cwd(), 'src', 'capabilities.ts'))
     } catch (error) {
-      this.error('A fatal error occurred during deleting unused resources', error)
+      this.error('A fatal error occurred while deleting unused resources', error)
       this.exit(2)
     }
 
@@ -237,9 +196,9 @@ class CreateTrelloPowerup extends Command {
         })
       }
       // 3.4 Environmental Variables File
-      const powerupId = monetizationParameters && monetizationParameters.powerupId ? monetizationParameters.powerupId : 'UNSPECIFIED'
-      const apiKey = monetizationParameters && monetizationParameters.apiKey ? monetizationParameters.apiKey : 'UNSPECIFIED'
-      const licenseType = monetizationParameters && monetizationParameters.licenseType ? monetizationParameters.licenseType : 'UNSPECIFIED'
+      const powerupId = args.powerupId ? args.powerupId : 'UNSPECIFIED'
+      const apiKey = args.apiKey ? args.apiKey : 'UNSPECIFIED'
+      const licenseType = args.licenseType ? args.licenseType : 'UNSPECIFIED'
       writeToFile(
         path.join(process.cwd(), folderName, '.env'),
         getEnv(
