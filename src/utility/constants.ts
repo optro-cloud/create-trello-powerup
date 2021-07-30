@@ -90,7 +90,7 @@ export const INPUT_ARGUMENTS = [
     default: undefined,
   },
   {
-    name: 'optroKey',
+    name: 'apiKey',
     required: false,
     description: 'Optro API key',
     default: undefined,
