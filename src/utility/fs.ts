@@ -58,6 +58,6 @@ export function addDependency(filePath: string, packageName: string, packageVers
 }
 
 export function centerConsole(input: string, consoleWidth: number) {
-  const padding = (' ').repeat(Math.floor((consoleWidth - input.length) / 2));
+  const padding = (' ').repeat(Math.floor((consoleWidth - input.length) / 2))
   return `${padding}${input}`
 }

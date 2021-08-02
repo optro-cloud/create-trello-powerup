@@ -21,7 +21,7 @@ import * as shell from 'shelljs'
 import * as replace from 'replace-in-file'
 import figlet from 'figlet'
 import filenamify from 'filenamify'
-import {blue} from 'kleur/colors';
+import {blue} from 'kleur/colors'
 import {
   ALL_CAPABILITIES,
   ALL_HTML_BACKED_CAPABILITIES,
@@ -39,7 +39,7 @@ import {
   REACT_ROUTER_MODULE_REPLACEMENT_STRING,
   TEMPLATE_REPO,
   WEBPACK_REPLACEMENT_STRING,
-} from './utility/constants';
+} from './utility/constants'
 import {
   addDependency, centerConsole,
   copyFile,
@@ -49,7 +49,7 @@ import {
   doesFolderExist,
   downloadRepo,
   writeToFile,
-} from './utility/fs';
+} from './utility/fs'
 
 class CreateTrelloPowerup extends Command {
   static description = 'Easily create Trello Power-Ups from the Command Line'
@@ -69,7 +69,7 @@ class CreateTrelloPowerup extends Command {
     this.log(blue('-'.repeat(CONSOLE_WIDTH)))
     this.log(blue(figlet.textSync(centerConsole('Optro', CONSOLE_WIDTH - 20), {
       font: 'Small Slant',
-    })));
+    })))
     this.log(blue('-'.repeat(CONSOLE_WIDTH)))
     this.log('🎉 Create Trello Power-Up')
     this.log('Generate a new Trello Power-Up to your exact specifications...')
