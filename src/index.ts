@@ -19,7 +19,9 @@ import * as path from 'path'
 import {execSync} from 'child_process'
 import * as shell from 'shelljs'
 import * as replace from 'replace-in-file'
+import figlet from 'figlet'
 import filenamify from 'filenamify'
+import {blue} from 'kleur/colors';
 import {
   ALL_CAPABILITIES,
   ALL_HTML_BACKED_CAPABILITIES,
@@ -28,7 +30,7 @@ import {
   CARD_BUTTON_CONDITIONAL_END_REPLACEMENT_STRING,
   CARD_BUTTON_CONDITIONAL_IMPORT_REPLACEMENT_STRING,
   CARD_BUTTON_CONDITIONAL_START_REPLACEMENT_STRING,
-  CARD_BUTTON_STATUS_REPLACEMENT_STRING, INPUT_ARGUMENTS,
+  CARD_BUTTON_STATUS_REPLACEMENT_STRING, CONSOLE_WIDTH, INPUT_ARGUMENTS,
   REACT_ROUTER_CLIENT_PROVIDER_CLOSE_REPLACEMENT_STRING,
   REACT_ROUTER_CLIENT_PROVIDER_REPLACEMENT_STRING,
   REACT_ROUTER_CLIENT_REPLACEMENT_STRING,
@@ -37,9 +39,9 @@ import {
   REACT_ROUTER_MODULE_REPLACEMENT_STRING,
   TEMPLATE_REPO,
   WEBPACK_REPLACEMENT_STRING,
-} from './utility/constants'
+} from './utility/constants';
 import {
-  addDependency,
+  addDependency, centerConsole,
   copyFile,
   deleteDependency,
   deleteFile,
@@ -47,7 +49,7 @@ import {
   doesFolderExist,
   downloadRepo,
   writeToFile,
-} from './utility/fs'
+} from './utility/fs';
 
 class CreateTrelloPowerup extends Command {
   static description = 'Easily create Trello Power-Ups from the Command Line'
@@ -64,10 +66,14 @@ class CreateTrelloPowerup extends Command {
     const {args, flags} = this.parse(CreateTrelloPowerup)
     this.debug(args, flags)
     // Show Introduction
-    this.log('---')
+    this.log(blue('-'.repeat(CONSOLE_WIDTH)))
+    this.log(blue(figlet.textSync(centerConsole('Optro', CONSOLE_WIDTH - 20), {
+      font: 'Small Slant',
+    })));
+    this.log(blue('-'.repeat(CONSOLE_WIDTH)))
     this.log('🎉 Create Trello Power-Up')
-    this.log('Create a new Trello Power-Up to your exact specifications...')
-    this.log('---')
+    this.log('Generate a new Trello Power-Up to your exact specifications...')
+    this.log('-'.repeat(CONSOLE_WIDTH))
 
     if (!shell.which('git')) {
       shell.echo('Missing Required Package: git')
