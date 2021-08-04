@@ -56,3 +56,8 @@ export function addDependency(filePath: string, packageName: string, packageVers
   }
   writeJsonFile(filePath, packageJson)
 }
+
+export function centerConsole(input: string, consoleWidth: number) {
+  const padding = (' ').repeat(Math.floor((consoleWidth - input.length) / 2))
+  return `${padding}${input}`
+}
