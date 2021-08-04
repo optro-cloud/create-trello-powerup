@@ -19,7 +19,9 @@ import * as path from 'path'
 import {execSync} from 'child_process'
 import * as shell from 'shelljs'
 import * as replace from 'replace-in-file'
+import figlet from 'figlet'
 import filenamify from 'filenamify'
+import {blue} from 'kleur/colors'
 import {
   ALL_CAPABILITIES,
   ALL_HTML_BACKED_CAPABILITIES,
@@ -28,7 +30,7 @@ import {
   CARD_BUTTON_CONDITIONAL_END_REPLACEMENT_STRING,
   CARD_BUTTON_CONDITIONAL_IMPORT_REPLACEMENT_STRING,
   CARD_BUTTON_CONDITIONAL_START_REPLACEMENT_STRING,
-  CARD_BUTTON_STATUS_REPLACEMENT_STRING,
+  CARD_BUTTON_STATUS_REPLACEMENT_STRING, CONSOLE_WIDTH, INPUT_ARGUMENTS,
   REACT_ROUTER_CLIENT_PROVIDER_CLOSE_REPLACEMENT_STRING,
   REACT_ROUTER_CLIENT_PROVIDER_REPLACEMENT_STRING,
   REACT_ROUTER_CLIENT_REPLACEMENT_STRING,
@@ -39,7 +41,7 @@ import {
   WEBPACK_REPLACEMENT_STRING,
 } from './utility/constants'
 import {
-  addDependency,
+  addDependency, centerConsole,
   copyFile,
   deleteDependency,
   deleteFile,
@@ -57,17 +59,21 @@ class CreateTrelloPowerup extends Command {
     help: flags.help({char: 'h'}),
   }
 
-  static args = [];
+  static args = INPUT_ARGUMENTS;
 
   async run() {
     // Read Arguments
     const {args, flags} = this.parse(CreateTrelloPowerup)
     this.debug(args, flags)
     // Show Introduction
-    this.log('---')
+    this.log(blue('-'.repeat(CONSOLE_WIDTH)))
+    this.log(blue(figlet.textSync(centerConsole('Optro', CONSOLE_WIDTH - 20), {
+      font: 'Small Slant',
+    })))
+    this.log(blue('-'.repeat(CONSOLE_WIDTH)))
     this.log('🎉 Create Trello Power-Up')
-    this.log('Create a new Trello Power-Up to your exact specifications...')
-    this.log('---')
+    this.log('Generate a new Trello Power-Up to your exact specifications...')
+    this.log('-'.repeat(CONSOLE_WIDTH))
 
     if (!shell.which('git')) {
       shell.echo('Missing Required Package: git')
@@ -81,10 +87,11 @@ class CreateTrelloPowerup extends Command {
         message: '1. What is the Power-Up Name?',
         type: 'input',
         default: 'my-powerup',
+        when: (_answers => !args.powerupName),
       },
       {
         name: 'capabilities',
-        message: '2. What Capabilities should be enabled?',
+        message: `${args.powerupName ? '1' : '2'}. What Capabilities should be enabled?`,
         type: 'checkbox',
         choices: [
           {name: 'Attachment Section', value: 'attachment-section'},
@@ -108,62 +115,20 @@ class CreateTrelloPowerup extends Command {
         ],
       },
       {
-        name: 'appKey',
-        message: '3. What is your Trello App Key? (get from https://trello.com/app-key)',
-        type: 'input',
-        default: 'UNSPECIFIED',
-      },
-      {
-        name: 'monetize',
-        message: '4. Do you want to enable Monetization?',
-        type: 'confirm',
-        default: false,
-      },
-    ])
-
-    let monetizationParameters = null
-
-    if (parameters.monetize) {
-      monetizationParameters = await inquirer.prompt([
-        {
-          name: 'licenseType',
-          message: '5. Should your Power-Up be licensed by Board or User?',
-          type: 'list',
-          choices: [
-            {name: 'License by Trello Board', value: 'board'},
-            {name: 'License by Trello User', value: 'member'},
-          ],
-        },
-        {
-          name: 'powerupId',
-          message: '6. What is your Power-Up ID? (get from https://www.trello.com/power-ups/admin)',
-          type: 'input',
-          default: 'UNSPECIFIED',
-        },
-        {
-          name: 'apiKey',
-          message: '7. Optro API Key? (get from https://vendor.optro.cloud)',
-          type: 'input',
-          default: 'UNSPECIFIED',
-        },
-      ])
-    }
-
-    const confirmParameters = await inquirer.prompt([
-      {
         name: 'confirm',
-        message: `${parameters.monetize ? '6' : '4'}. Confirm?`,
+        message: `${args.powerupName ? '2' : '3'}. Confirm Power-Up generation?`,
         type: 'confirm',
         default: true,
+        when: (answers => answers),
       },
     ])
 
-    if (!confirmParameters.confirm) {
+    if (!parameters.confirm) {
       this.error('User Cancelled Project Generation')
       this.exit(0)
     }
 
-    const folderName = filenamify(parameters.name).replace(' ', '-')
+    const folderName = args.powerupName ?? filenamify(parameters.name).replace(' ', '-')
 
     // Check if Directory Exists
     if (doesFolderExist(folderName)) {
@@ -193,7 +158,7 @@ class CreateTrelloPowerup extends Command {
       deleteFile(path.join(process.cwd(), 'src', 'router.tsx'))
       deleteFile(path.join(process.cwd(), 'src', 'capabilities.ts'))
     } catch (error) {
-      this.error('A fatal error occurred during deleting unused resources', error)
+      this.error('A fatal error occurred while deleting unused resources', error)
       this.exit(2)
     }
 
@@ -237,9 +202,9 @@ class CreateTrelloPowerup extends Command {
         })
       }
       // 3.4 Environmental Variables File
-      const powerupId = monetizationParameters && monetizationParameters.powerupId ? monetizationParameters.powerupId : 'UNSPECIFIED'
-      const apiKey = monetizationParameters && monetizationParameters.apiKey ? monetizationParameters.apiKey : 'UNSPECIFIED'
-      const licenseType = monetizationParameters && monetizationParameters.licenseType ? monetizationParameters.licenseType : 'UNSPECIFIED'
+      const powerupId = args.powerupId ? args.powerupId : 'UNSPECIFIED'
+      const apiKey = args.apiKey ? args.apiKey : 'UNSPECIFIED'
+      const licenseType = args.licenseType ? args.licenseType : 'UNSPECIFIED'
       writeToFile(
         path.join(process.cwd(), folderName, '.env'),
         getEnv(
