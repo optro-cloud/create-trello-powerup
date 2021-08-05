@@ -100,7 +100,7 @@ class CreateTrelloPowerup extends Command {
           {name: 'Board Button', value: 'board-buttons', checked: true},
           {name: 'Card Back Section', value: 'card-back-section', checked: true},
           {name: 'Card Badges', value: 'card-badges', checked: true},
-          {name: 'Card Button', value: 'card-buttons', checked: true},
+          {name: 'Card Button', value: 'card-buttons', checked: true, disabled: 'Mandatory'},
           {name: 'Card Detail Badge', value: 'card-detail-badges', checked: true},
           {name: 'Card From URL', value: 'card-from-url'},
           {name: 'Format URL', value: 'format-url'},
