@@ -19,9 +19,7 @@ import * as path from 'path'
 import {execSync} from 'child_process'
 import * as shell from 'shelljs'
 import * as replace from 'replace-in-file'
-import figlet from 'figlet'
 import filenamify from 'filenamify'
-import {blue} from 'kleur/colors'
 import {
   ALL_CAPABILITIES,
   ALL_HTML_BACKED_CAPABILITIES,
@@ -30,7 +28,7 @@ import {
   CARD_BUTTON_CONDITIONAL_END_REPLACEMENT_STRING,
   CARD_BUTTON_CONDITIONAL_IMPORT_REPLACEMENT_STRING,
   CARD_BUTTON_CONDITIONAL_START_REPLACEMENT_STRING,
-  CARD_BUTTON_STATUS_REPLACEMENT_STRING, CONSOLE_WIDTH, INPUT_ARGUMENTS,
+  CARD_BUTTON_STATUS_REPLACEMENT_STRING, INPUT_ARGUMENTS,
   REACT_ROUTER_CLIENT_PROVIDER_CLOSE_REPLACEMENT_STRING,
   REACT_ROUTER_CLIENT_PROVIDER_REPLACEMENT_STRING,
   REACT_ROUTER_CLIENT_REPLACEMENT_STRING,
@@ -41,7 +39,7 @@ import {
   WEBPACK_REPLACEMENT_STRING,
 } from './utility/constants'
 import {
-  addDependency, centerConsole,
+  addDependency,
   copyFile,
   deleteDependency,
   deleteFile,
@@ -65,15 +63,15 @@ class CreateTrelloPowerup extends Command {
     // Read Arguments
     const {args, flags} = this.parse(CreateTrelloPowerup)
     this.debug(args, flags)
-    // Show Introduction
-    this.log(blue('-'.repeat(CONSOLE_WIDTH)))
-    this.log(blue(figlet.textSync(centerConsole('Optro', CONSOLE_WIDTH - 20), {
-      font: 'Small Slant',
-    })))
-    this.log(blue('-'.repeat(CONSOLE_WIDTH)))
-    this.log('🎉 Create Trello Power-Up')
-    this.log('Generate a new Trello Power-Up to your exact specifications...')
-    this.log('-'.repeat(CONSOLE_WIDTH))
+    this.log()
+    this.log('┌' + '─'.repeat(27) + '┐')
+    this.log('│ Create Trello Power-Up 🚀 │')
+    this.log('└' + '─'.repeat(27) + '┘')
+    this.log()
+    this.log('Generate a new Trello Power-Up in minutes.\n')
+    this.log('Find more information in our step-by-step guide:')
+    this.log('» https://vendor.optro.cloud/build-powerup-guide')
+    this.log('\n')
 
     if (!shell.which('git')) {
       shell.echo('Missing Required Package: git')
@@ -100,7 +98,7 @@ class CreateTrelloPowerup extends Command {
           {name: 'Board Button', value: 'board-buttons', checked: true},
           {name: 'Card Back Section', value: 'card-back-section', checked: true},
           {name: 'Card Badges', value: 'card-badges', checked: true},
-          {name: 'Card Button', value: 'card-buttons', checked: true},
+          {name: 'Card Button', value: 'card-buttons', checked: true, disabled: 'Mandatory'},
           {name: 'Card Detail Badge', value: 'card-detail-badges', checked: true},
           {name: 'Card From URL', value: 'card-from-url'},
           {name: 'Format URL', value: 'format-url'},
@@ -215,56 +213,54 @@ class CreateTrelloPowerup extends Command {
         ),
       )
       // 3.6 Monetization
-      if (parameters.monetize) {
-        // 3.6.1 Add Dependency for the Optro API Client
-        addDependency(path.join(process.cwd(), folderName, 'package.json'), '@optro/api-client', '^1.0.3')
-        // 3.6.2 Add License Provider to Router
+      // 3.6.1 Add Dependency for the Optro API Client
+      addDependency(path.join(process.cwd(), folderName, 'package.json'), '@optro/api-client', '^1.0.3')
+      // 3.6.2 Add License Provider to Router
+      replace.replaceInFileSync({
+        files: path.join(process.cwd(), folderName, 'src', 'router.tsx'),
+        from: REACT_ROUTER_IMPORT_REPLACEMENT_STRING,
+        to: getReactRouterMonetizationImport(),
+      })
+      replace.replaceInFileSync({
+        files: path.join(process.cwd(), folderName, 'src', 'router.tsx'),
+        from: REACT_ROUTER_CLIENT_REPLACEMENT_STRING,
+        to: getReactRouterMonetizationClient(),
+      })
+      replace.replaceInFileSync({
+        files: path.join(process.cwd(), folderName, 'src', 'router.tsx'),
+        from: REACT_ROUTER_CLIENT_PROVIDER_REPLACEMENT_STRING,
+        to: getReactRouterMonetizationProvider(),
+      })
+      replace.replaceInFileSync({
+        files: path.join(process.cwd(), folderName, 'src', 'router.tsx'),
+        from: REACT_ROUTER_CLIENT_PROVIDER_CLOSE_REPLACEMENT_STRING,
+        to: getReactRouterMonetizationProviderClose(),
+      })
+      // 3.6.2 Add Example Licensed Feature (Colorized Cards)
+      if (parameters.capabilities.includes('card-buttons')) {
+        // 3.6.3 Add import for LicenseConditional to the Card Button component
         replace.replaceInFileSync({
-          files: path.join(process.cwd(), folderName, 'src', 'router.tsx'),
-          from: REACT_ROUTER_IMPORT_REPLACEMENT_STRING,
-          to: getReactRouterMonetizationImport(),
+          files: path.join(process.cwd(), folderName, 'src', 'card-button', 'CardButton.tsx'),
+          from: CARD_BUTTON_CONDITIONAL_IMPORT_REPLACEMENT_STRING,
+          to: getCardButtonMonetizationImport(),
+        })
+        // 3.6.4 Add LicenseConditional to the Render Code
+        replace.replaceInFileSync({
+          files: path.join(process.cwd(), folderName, 'src', 'card-button', 'CardButton.tsx'),
+          from: CARD_BUTTON_CONDITIONAL_START_REPLACEMENT_STRING,
+          to: getCardButtonMonetizationStartTag(),
         })
         replace.replaceInFileSync({
-          files: path.join(process.cwd(), folderName, 'src', 'router.tsx'),
-          from: REACT_ROUTER_CLIENT_REPLACEMENT_STRING,
-          to: getReactRouterMonetizationClient(),
+          files: path.join(process.cwd(), folderName, 'src', 'card-button', 'CardButton.tsx'),
+          from: CARD_BUTTON_CONDITIONAL_END_REPLACEMENT_STRING,
+          to: getCardButtonMonetizationEndTag(),
         })
+        // 3.6.5 Add License Status Display
         replace.replaceInFileSync({
-          files: path.join(process.cwd(), folderName, 'src', 'router.tsx'),
-          from: REACT_ROUTER_CLIENT_PROVIDER_REPLACEMENT_STRING,
-          to: getReactRouterMonetizationProvider(),
+          files: path.join(process.cwd(), folderName, 'src', 'card-button', 'CardButton.tsx'),
+          from: CARD_BUTTON_STATUS_REPLACEMENT_STRING,
+          to: getLicenseStatusTag(),
         })
-        replace.replaceInFileSync({
-          files: path.join(process.cwd(), folderName, 'src', 'router.tsx'),
-          from: REACT_ROUTER_CLIENT_PROVIDER_CLOSE_REPLACEMENT_STRING,
-          to: getReactRouterMonetizationProviderClose(),
-        })
-        // 3.6.2 Add Example Licensed Feature (Colorized Cards)
-        if (parameters.capabilities.includes('card-buttons')) {
-          // 3.6.3 Add import for LicenseConditional to the Card Button component
-          replace.replaceInFileSync({
-            files: path.join(process.cwd(), folderName, 'src', 'card-button', 'CardButton.tsx'),
-            from: CARD_BUTTON_CONDITIONAL_IMPORT_REPLACEMENT_STRING,
-            to: getCardButtonMonetizationImport(),
-          })
-          // 3.6.4 Add LicenseConditional to the Render Code
-          replace.replaceInFileSync({
-            files: path.join(process.cwd(), folderName, 'src', 'card-button', 'CardButton.tsx'),
-            from: CARD_BUTTON_CONDITIONAL_START_REPLACEMENT_STRING,
-            to: getCardButtonMonetizationStartTag(),
-          })
-          replace.replaceInFileSync({
-            files: path.join(process.cwd(), folderName, 'src', 'card-button', 'CardButton.tsx'),
-            from: CARD_BUTTON_CONDITIONAL_END_REPLACEMENT_STRING,
-            to: getCardButtonMonetizationEndTag(),
-          })
-          // 3.6.5 Add License Status Display
-          replace.replaceInFileSync({
-            files: path.join(process.cwd(), folderName, 'src', 'card-button', 'CardButton.tsx'),
-            from: CARD_BUTTON_STATUS_REPLACEMENT_STRING,
-            to: getLicenseStatusTag(),
-          })
-        }
       }
 
       // 3.5 Cleanup Unused Dependencies
