@@ -26,8 +26,6 @@ export const CARD_BUTTON_CONDITIONAL_END_REPLACEMENT_STRING = '<label htmlFor="n
 
 export const CARD_BUTTON_STATUS_REPLACEMENT_STRING = '<div id="container">'
 
-export const CONSOLE_WIDTH = 80
-
 export const ALL_CAPABILITIES = [
   'attachment-sections',
   'attachment-thumbnail',
