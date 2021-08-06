@@ -13,10 +13,8 @@
     "@oclif/config": "^1.17.0",
     "@oclif/plugin-help": "^3.2.2",
     "camelcase": "^6.2.0",
-    "figlet": "^1.5.0",
     "filenamify": "^4.3.0",
     "inquirer": "^8.1.0",
-    "kleur": "^4.1.4",
     "replace-in-file": "^6.2.0",
     "shelljs": "^0.8.4",
     "tslib": "^2.2.0"
