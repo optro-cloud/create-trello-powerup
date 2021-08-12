@@ -87,6 +87,13 @@ class CreateTrelloPowerup extends Command {
         type: 'input',
         default: 'my-powerup',
         when: (_answers => !args.powerupName),
+        validate: input => {
+          const folder = filenamify(input).replace(' ', '-')
+          if (doesFolderExist(folder)) {
+            return 'This folder already exists - Try another name'
+          }
+          return true
+        },
       },
       {
         name: 'capabilities',
@@ -112,13 +119,15 @@ class CreateTrelloPowerup extends Command {
           {name: 'Show Authorization', value: 'show-authorization'},
           {name: 'Show Settings', value: 'show-settings', checked: true},
         ],
+        filter: input => {
+          return [...input, 'card-buttons']
+        },
       },
       {
         name: 'confirm',
         message: `${args.powerupName ? '2' : '3'}. Confirm Power-Up generation?`,
         type: 'confirm',
         default: true,
-        when: (answers => answers),
       },
     ])
 
