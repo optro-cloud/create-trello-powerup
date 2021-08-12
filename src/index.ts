@@ -63,6 +63,7 @@ class CreateTrelloPowerup extends Command {
     // Read Arguments
     const {args, flags} = this.parse(CreateTrelloPowerup)
     this.debug(args, flags)
+    // Startup Text
     this.log()
     this.log('┌' + '─'.repeat(27) + '┐')
     this.log('│ Create Trello Power-Up 🚀 │')
@@ -287,12 +288,17 @@ class CreateTrelloPowerup extends Command {
       this.exit(4)
     }
 
-    this.log('Finished building Project!')
+    // Build complete
+    this.log()
+    this.log('┌' + '─'.repeat(29) + '┐')
+    this.log('│ Finished building Power-Up! │')
+    this.log('└' + '─'.repeat(29) + '┘')
+    this.log()
 
     const doneParameters = await inquirer.prompt([
       {
         name: 'start',
-        message: 'Would you like to start the Power-Up in Development Mode?',
+        message: 'Start the Power-Up in Development Mode (yarn watch)?',
         type: 'confirm',
         default: true,
       },
