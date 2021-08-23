@@ -136,7 +136,7 @@ class CreateTrelloPowerup extends Command {
       this.exit(0)
     }
 
-    const folderName = (args.powerupName.toLowerCase() ?? filenamify(parameters.name)).replaceAll(' ', '-')
+    const folderName = (args.powerupName ?? filenamify(parameters.name)).toLowerCase().replaceAll(' ', '-')
 
     // Check if Directory Exists
     if (doesFolderExist(folderName)) {
