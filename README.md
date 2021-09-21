@@ -10,7 +10,9 @@
 
 This package enables you to easily create Trello Power-Ups from the Command Line.
 
-Try it today with `npx @optro/create-trello-powerup`
+Start building your Power-Up by running `npx @optro/create-trello-powerup`.
+
+Used this package before? Run `npx @optro/create-trello-powerup@latest` to use the latest version.
 
 ## Features
 
