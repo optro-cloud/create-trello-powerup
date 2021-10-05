@@ -19,6 +19,7 @@ Used this package before? Run `npx @optro/create-trello-powerup@latest` to use t
 This command line tool enables you to create Trello Power-Ups easily and can generate a new project with everything you need to get going.
 
 - A Power-Up written with TypeScript, with a React front-end
+- Integrated Monetization with [Optro](https://www.optro.cloud/) via [Optro Vendor](https://vendor.optro.cloud/)
 - Single command development mode for fast local development with ngrok using `yarn watch`
 - Automatic refresh of the React front-end following local changes
 - Build a static website from the source with `yarn build`
@@ -35,6 +36,8 @@ You need to have the following dependencies installed on your system prior to us
 - Git
 
 ## Usage
+**For an in-depth walkthrough you can follow our [online guide](https://docs.appfox.io/optro-vendor/Start-the-Power-Up-Generator.153059402.html).**
+
 
 The CLI can be started with a single command provided you have Node.js and Git installed.
 
@@ -42,43 +45,57 @@ Once you have started the command, the on-screen instructions will guide you thr
 
 ```sh-session
 $ npx @optro/create-trello-powerup
-
----
-Create-Trello-PowerUp
-Easily create new Trello Power-Ups with sample code and capabilities...
----
-
-? [1/2] Name?
+                           
+┌───────────────────────────┐                         
+│ Create Trello Power-Up � │                          
+└───────────────────────────┘                         
+                                                      
+Generate a new Trello Power-Up in minutes.            
+                                                      
+Find more information in our step-by-step guide:      
+» https://vendor.optro.cloud/build-powerup-guide      
+                                                      
+                                                      
+? 1. What is the Power-Up Name? (my-powerup) 
 > My Example Power-Up
 
-? [2/2] Capabilities: (Press <space> to select, <a> to toggle all, <i> to invert selection)
-> ( ) Attachment Section
-  ( ) Attachment Thumbnail
-  ( ) Authorization Status
-  (*) Board Button
-  (*) Card Back Section
-  (*) Card Badges
-  (*) Card Button
+? 2. What Capabilities should be enabled? (Press <space> to select, <a> to toggle all, <i> to invert selection)
+>( ) Attachment Section
+ ( ) Attachment Thumbnail
+ ( ) Authorization Status
+ (*) Board Button
+ (*) Card Back Section
+ (*) Card Badges
+ - Card Button (Mandatory)
 (Move up and down to reveal more choices)
 
-? [3/3] Confirm package creation? y/n (Y/n)
+? 3. Confirm Power-Up generation? (Y/n)
 
 [1/4] Cloning Template...
+Cloning into 'C:\Development\my-example-power-up'...
 [2/4] Deleting Unused Resources...
 [3/4] Configuring Dynamic Files...
 [4/4] Installing Dependencies...
 
-Done!
+┌─────────────────────────────┐
+│ Finished building Power-Up! │
+└─────────────────────────────┘
+
+? Start the Power-Up in Development Mode (yarn watch)? (Y/n)
 ```
 
 ## How does it work?
 
 This package uses `git` to clone the template project [@optro-cloud/trello-powerup-full-sample](https://github.com/optro-cloud/trello-powerup-full-sample) and then rewrites the required files according to the specification provided. Check out the template repository for more information, or for an exhaustive example.
 
-## Coming Soon...
+## Monetization
 
-The current release of the generator is the first main release of the tool and it will be improved over time.
+Power-Up monetization is powered by [Optro Vendor](https://vendor.optro.cloud/), and can be activated during generation of your Power-Up or added to an [already existing Power-Up](https://docs.appfox.io/optro-vendor/Use-the-Trello-API-with-React.153059747.html).
 
-In the next release, we will be enabling Monetization Support using the [Optro Platform](https://www.optro.cloud).
+The [Optro Vendor](https://vendor.optro.cloud/) platform allows you to publish your Power-Up to the [Optro Market](https://www.optro.cloud)
+which allows you to choose to accept subscription payments for the Power-Ups that you've written, using the Optro Vendor solution.
 
-This will enable an additional option during project generation to enable monetization support, which allows you to choose to accept subscription payments using Per-User or Per-Board Licensing for the Power-Ups that you've written, using the Optro Vendor solution.
+**We recommend [registration on Optro Vendor](https://vendor.optro.cloud/apply) prior to generation of a Monetized Power-Up to reduce the amount of configuration necessary after the fact.**
+
+Using the Optro vendor platform you'll be able to [create](https://docs.appfox.io/optro-vendor/Create-your-Power-Up-Listing.153059666.html) and [publish](https://docs.appfox.io/optro-vendor/Manage-your-Power-Up-Listings.153059673.html) a listing for your product which will be made visible on the Marketplace once your Power-Up is made available for purchase.
+
