@@ -46,6 +46,7 @@ export function deleteDependency(filePath: string, packageName: string) {
   } else if (packageJson.devDependencies[packageName]) {
     delete packageJson.devDependencies[packageName]
   }
+
   writeJsonFile(filePath, packageJson)
 }
 
@@ -54,5 +55,6 @@ export function addDependency(filePath: string, packageName: string, packageVers
   if (!packageJson.dependencies[packageName]) {
     packageJson.dependencies[packageName] = packageVersion
   }
+
   writeJsonFile(filePath, packageJson)
 }
