@@ -10,6 +10,7 @@ import {
   REACT_ROUTER_LOADER_REPLACEMENT_STRING,
   REACT_ROUTER_MODULE_REPLACEMENT_STRING,
   WEBPACK_REPLACEMENT_STRING,
+// eslint-disable-next-line node/no-missing-import
 } from './constants'
 
 function getCapabilityFolderName(capability: string) {

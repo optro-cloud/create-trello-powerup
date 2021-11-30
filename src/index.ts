@@ -14,8 +14,9 @@ import {
   getReactRouterMonetizationProviderClose,
   getReactRouterRoute,
   getWebpackHtmlPlugin,
+// eslint-disable-next-line node/no-missing-import
 } from './utility/string'
-import * as path from 'path'
+import path from 'path'
 import {execSync} from 'child_process'
 import * as shell from 'shelljs'
 import * as replace from 'replace-in-file'
@@ -37,6 +38,7 @@ import {
   REACT_ROUTER_MODULE_REPLACEMENT_STRING,
   TEMPLATE_REPO,
   WEBPACK_REPLACEMENT_STRING,
+// eslint-disable-next-line node/no-missing-import
 } from './utility/constants'
 import {
   addDependency,
@@ -47,6 +49,7 @@ import {
   doesFolderExist,
   downloadRepo,
   writeToFile,
+// eslint-disable-next-line node/no-missing-import
 } from './utility/fs'
 
 class CreateTrelloPowerup extends Command {
@@ -92,6 +95,7 @@ class CreateTrelloPowerup extends Command {
           if (doesFolderExist(folder)) {
             return 'This folder already exists - Try another name'
           }
+
           return true
         },
       },
@@ -161,6 +165,7 @@ class CreateTrelloPowerup extends Command {
       for (const capability of capabilitiesToRemove) {
         deleteFolder(path.join(process.cwd(), folderName, 'src', capability))
       }
+
       deleteFolder(path.join(process.cwd(), folderName, '.github', 'ISSUE_TEMPLATE'))
       deleteFile(path.join(process.cwd(), 'webpack.config.ts'))
       deleteFile(path.join(process.cwd(), 'src', 'router.tsx'))
@@ -196,6 +201,7 @@ class CreateTrelloPowerup extends Command {
           to: getReactRouterLoader(capability),
         })
       }
+
       for (const capability of parameters.capabilities) {
         // 3.3 Capabilities File
         replace.replaceInFileSync({
@@ -209,6 +215,7 @@ class CreateTrelloPowerup extends Command {
           to: getCapabilityModule(capability),
         })
       }
+
       // 3.4 Environmental Variables File
       const powerupId = args.powerupId ? args.powerupId : 'UNSPECIFIED'
       const apiKey = args.apiKey ? args.apiKey : 'UNSPECIFIED'
@@ -277,9 +284,11 @@ class CreateTrelloPowerup extends Command {
       if (!parameters.capabilities.includes('card-back-section')) {
         deleteDependency(path.join(process.cwd(), folderName, 'package.json'), 'lottie-react')
       }
+
       if (!parameters.capabilities.includes('attachment-thumbnail')) {
         deleteDependency(path.join(process.cwd(), folderName, 'package.json'), 'unique-names-generator')
       }
+
       if (!parameters.capabilities.includes('card-buttons')) {
         deleteDependency(path.join(process.cwd(), folderName, 'package.json'), 'react-color')
       }
