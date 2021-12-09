@@ -1,7 +1,7 @@
 {
   "name": "@optro/create-trello-powerup",
   "description": "Easily create Trello Power-Ups from the Command Line",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "author": "Optro",
   "website": "https://www.optro.cloud",
   "bin": {
@@ -47,7 +47,21 @@
   ],
   "homepage": "https://github.com/optro-cloud/create-trello-powerup",
   "keywords": [
-    "oclif"
+    "oclif",
+    "Trello",
+    "Trello-powerup",
+    "Trello-cards",
+    "React-component",
+    "Cli",
+    "React",
+    "Typescript",
+    "Node-trello",
+    "Trello-actions",
+    "Trello-api",
+    "Trello-typescript",
+    "React-trello",
+    "Nodejs",
+    "Board"
   ],
   "license": "MIT",
   "main": "lib/index.js",
