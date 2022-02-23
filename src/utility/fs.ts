@@ -2,7 +2,7 @@ import * as shell from 'shelljs'
 import * as fs from 'fs'
 
 export async function downloadRepo(url: string, destination: string): Promise<void> {
-  shell.exec(`git clone ${url} ${destination}`)
+  shell.exec(`git clone ${url} "${destination}"`)
 }
 
 export function deleteFile(path: string): void {
