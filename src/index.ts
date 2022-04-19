@@ -74,7 +74,7 @@ class CreateTrelloPowerup extends Command {
     this.log()
     this.log('Generate a new Trello Power-Up in minutes.\n')
     this.log('Find more information in our step-by-step guide:')
-    this.log('» https://vendor.optro.cloud/build-trello-powerup)
+    this.log('» https://vendor.optro.cloud/build-trello-powerup')
     this.log('\n')
 
     if (!shell.which('git')) {
